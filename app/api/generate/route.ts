@@ -1,30 +1,42 @@
 import OpenAI from "openai";
+import { NextResponse } from "next/server";
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
-export async function POST() {
+export async function POST(req: Request) {
   try {
+    const body = await req.json();
+
+    console.log("API KEY:", process.env.OPENAI_API_KEY);
+
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
+
     const completion = await openai.chat.completions.create({
-      model: "gpt-4.1-mini",
+      model: "gpt-3.5-turbo",
       messages: [
         {
           role: "user",
-          content:
-            "Generame un título y descripción para vender un iPhone 15 en Mercado Libre.",
+          content: `
+Producto: ${body.product}
+
+Descripción:
+${body.description}
+
+Genera una publicación profesional para Mercado Libre.
+          `,
         },
       ],
     });
 
-    return Response.json({
+    return NextResponse.json({
       result: completion.choices[0].message.content,
     });
-  } catch (error) {
+
+  } catch (error: any) {
     console.log(error);
 
-    return Response.json({
-      result: "Error con OpenAI",
+    return NextResponse.json({
+      result: error.message,
     });
   }
 }
