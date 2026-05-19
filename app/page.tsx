@@ -1,6 +1,40 @@
 "use client";
 
+import { useState } from "react";
+
 export default function Home() {
+
+  const [product, setProduct] = useState("");
+  const [description, setDescription] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState("");
+
+  async function generateListing() {
+    try {
+      setLoading(true);
+
+      const response = await fetch("/api/generate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          product,
+          description,
+        }),
+      });
+
+      const data = await response.json();
+
+      setResult(data.result);
+
+    } catch (error) {
+      alert("Error generando publicación");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <main className="bg-black text-white">
 
@@ -74,37 +108,10 @@ export default function Home() {
                     OUTPUT IA
                   </p>
 
-                  <div className="bg-zinc-900 rounded-2xl p-4 mb-3">
-                    <p className="text-zinc-500 text-xs mb-2">
-                      Título
-                    </p>
-
-                    <p className="font-medium">
-                      Publicación optimizada
-                      generada automáticamente
-                    </p>
-                  </div>
-
-                  <div className="bg-zinc-900 rounded-2xl p-4 mb-3">
-                    <p className="text-zinc-500 text-xs mb-2">
-                      Descripción
-                    </p>
-
-                    <p className="text-sm text-zinc-300">
-                      Descripción profesional
-                      optimizada para conversión y SEO.
-                    </p>
-                  </div>
-
-                  <div className="flex flex-wrap gap-2">
-                    {["SEO", "mercado libre", "ventas", "ecommerce"].map((tag) => (
-                      <span
-                        key={tag}
-                        className="bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs px-3 py-1 rounded-full"
-                      >
-                        {tag}
-                      </span>
-                    ))}
+                  <div className="bg-zinc-900 rounded-2xl p-4 h-full">
+                    <pre className="whitespace-pre-wrap text-sm text-zinc-300">
+                      {result || "La IA generará la publicación automáticamente..."}
+                    </pre>
                   </div>
                 </div>
 
@@ -135,17 +142,32 @@ export default function Home() {
             <input
               type="text"
               placeholder="Nombre del producto"
+              value={product}
+              onChange={(e) => setProduct(e.target.value)}
               className="w-full bg-black border border-zinc-700 rounded-2xl p-5 mb-5"
             />
 
             <textarea
               placeholder="Descripción base..."
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
               className="w-full bg-black border border-zinc-700 rounded-2xl p-5 h-40 mb-5"
             />
 
-            <button className="bg-blue-600 hover:bg-blue-500 px-8 py-4 rounded-2xl font-semibold transition">
-              Generar publicación
+            <button
+              onClick={generateListing}
+              className="bg-blue-600 hover:bg-blue-500 px-8 py-4 rounded-2xl font-semibold transition"
+            >
+              {loading ? "Generando..." : "Generar publicación"}
             </button>
+
+            {result && (
+              <div className="mt-8 bg-black border border-zinc-800 rounded-2xl p-6">
+                <pre className="whitespace-pre-wrap text-zinc-300">
+                  {result}
+                </pre>
+              </div>
+            )}
 
           </div>
         </div>
