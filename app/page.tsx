@@ -12,6 +12,13 @@ export default function Home() {
     try {
       const response = await fetch("/api/generate", {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          product: "iPhone 15 Pro Max",
+          description: "256GB color negro nuevo sellado",
+        }),
       });
 
       const data = await response.json();
@@ -27,27 +34,42 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-black text-white flex items-center justify-center p-10">
-      <div className="max-w-3xl w-full text-center">
-        <h1 className="text-6xl font-bold mb-6">
-          ListingAI
-        </h1>
-
-        <p className="text-zinc-400 text-xl mb-10">
-          Generá publicaciones de Mercado Libre con IA
-        </p>
-
-        <button
-          onClick={generarContenido}
-          className="bg-blue-600 hover:bg-blue-500 px-8 py-4 rounded-2xl text-xl font-semibold"
-        >
-          {loading ? "Generando..." : "Generar Publicación"}
-        </button>
-
-        {result && (
-          <div className="mt-10 bg-zinc-900 border border-zinc-800 rounded-2xl p-6 text-left whitespace-pre-wrap">
-            {result}
+      <div className="max-w-5xl w-full grid md:grid-cols-2 gap-16 items-center">
+        
+        <div>
+          <div className="inline-block mb-6 px-4 py-2 rounded-full border border-blue-500/30 bg-blue-500/10 text-blue-400 text-sm">
+            ⚡ IA para vendedores de Mercado Libre
           </div>
-        )}
+
+          <h1 className="text-7xl font-bold leading-tight mb-6">
+            Publicá productos{" "}
+            <span className="text-blue-500">10x más rápido</span>
+          </h1>
+
+          <p className="text-zinc-400 text-xl mb-10">
+            Generá títulos, descripciones y keywords SEO automáticamente con inteligencia artificial.
+          </p>
+
+          <button
+            onClick={generarContenido}
+            className="bg-blue-600 hover:bg-blue-500 transition px-8 py-4 rounded-2xl text-xl font-semibold"
+          >
+            {loading ? "Generando..." : "Generar Publicación"}
+          </button>
+        </div>
+
+        <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+          <div className="bg-black rounded-2xl p-6 min-h-[400px] whitespace-pre-wrap">
+            {result ? (
+              result
+            ) : (
+              <div className="text-zinc-500">
+                La publicación generada por IA aparecerá acá...
+              </div>
+            )}
+          </div>
+        </div>
+
       </div>
     </main>
   );
