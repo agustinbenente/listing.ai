@@ -4,41 +4,27 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-export async function POST(req: Request) {
+export async function POST() {
   try {
-    const body = await req.json();
-
-    const prompt = `
-    Genera una publicación profesional para Mercado Libre.
-
-    Producto:
-    ${body.product}
-
-    Descripción:
-    ${body.description}
-
-    Devuelve:
-    - titulo
-    - descripcion
-    - keywords seo
-    `;
-
-    const response = await openai.chat.completions.create({
+    const completion = await openai.chat.completions.create({
       model: "gpt-4.1-mini",
       messages: [
         {
           role: "user",
-          content: prompt,
+          content:
+            "Generame un título y descripción para vender un iPhone 15 en Mercado Libre.",
         },
       ],
     });
 
     return Response.json({
-      result: response.choices[0].message.content,
+      result: completion.choices[0].message.content,
     });
   } catch (error) {
+    console.log(error);
+
     return Response.json({
-      error: "Error generando publicación",
+      result: "Error con OpenAI",
     });
   }
 }
