@@ -3,6 +3,8 @@
 import { useState } from "react";
 
 export default function Home() {
+  const [product, setProduct] = useState("");
+  const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState("");
 
@@ -16,8 +18,8 @@ export default function Home() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          product: "iPhone 15 Pro Max",
-          description: "256GB color negro nuevo sellado",
+          product,
+          description,
         }),
       });
 
@@ -34,8 +36,8 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-black text-white flex items-center justify-center p-10">
-      <div className="max-w-5xl w-full grid md:grid-cols-2 gap-16 items-center">
-        
+      <div className="max-w-6xl w-full grid md:grid-cols-2 gap-16 items-center">
+
         <div>
           <div className="inline-block mb-6 px-4 py-2 rounded-full border border-blue-500/30 bg-blue-500/10 text-blue-400 text-sm">
             ⚡ IA para vendedores de Mercado Libre
@@ -50,6 +52,25 @@ export default function Home() {
             Generá títulos, descripciones y keywords SEO automáticamente con inteligencia artificial.
           </p>
 
+          <div className="space-y-4 mb-6">
+
+            <input
+              type="text"
+              placeholder="Nombre del producto"
+              value={product}
+              onChange={(e) => setProduct(e.target.value)}
+              className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-4 outline-none"
+            />
+
+            <textarea
+              placeholder="Descripción del producto"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-4 outline-none min-h-[120px]"
+            />
+
+          </div>
+
           <button
             onClick={generarContenido}
             className="bg-blue-600 hover:bg-blue-500 transition px-8 py-4 rounded-2xl text-xl font-semibold"
@@ -59,7 +80,7 @@ export default function Home() {
         </div>
 
         <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
-          <div className="bg-black rounded-2xl p-6 min-h-[400px] whitespace-pre-wrap">
+          <div className="bg-black rounded-2xl p-6 min-h-[500px] whitespace-pre-wrap">
             {result ? (
               result
             ) : (
